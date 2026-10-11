@@ -1,0 +1,8 @@
+curl -sS https://api.hcaptcha.com/siteverify \
+  -X POST \
+  --data-urlencode "secret=your_secret_key" \
+  --data-urlencode "response=token-from-client" \
+  --data-urlencode "remoteip=203.0.113.10" \
+  --data-urlencode "sitekey=d2a034a6-03e6-4ef2-91d4-39dc9fbc5b1c"
+# output:
+# {"success":true,"error-codes":[],"hostname":"example.com"}
