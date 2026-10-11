@@ -1,0 +1,15 @@
+async function verifyToken(token, ip) {
+  const payload = {
+    secret: "your_secret_key",
+    response: token,
+    remoteip: ip,
+    sitekey: "d2a034a6-03e6-4ef2-91d4-39dc9fbc5b1c",
+  };
+  const params = new URLSearchParams(payload);
+  const res = await fetch(
+    "https://api.hcaptcha.com/siteverify",
+    { method: "POST", body: params },
+  );
+  const j = await res.json();
+  return j.success ? [true, []] : [false, j["error-codes"] || []];
+}
