@@ -1,0 +1,28 @@
+fn verify_token(token: &str, ip: &str) -> anyhow::Result<(bool, Vec<String>)> {
+  let form = [
+    ("secret", "your_secret_key"),
+    ("response", token),
+    ("remoteip", ip),
+    ("sitekey", "d2a034a6-03e6-4ef2-91d4-39dc9fbc5b1c"),
+  ];
+  let client = reqwest::blocking::Client::new();
+  let j: serde_json::Value = client
+    .post("https://api.hcaptcha.com/siteverify")
+    .form(&form)
+    .send()?
+    .json()?;
+
+  if j["success"].as_bool().unwrap_or(false) {
+    return Ok((true, vec![]));
+  }
+
+  let errors = j["error-codes"]
+    .as_array()
+    .map(|xs| {
+      xs.iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect()
+    })
+    .unwrap_or_default();
+  Ok((false, errors))
+}
