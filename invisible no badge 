@@ -1,0 +1,22 @@
+<form id="signup-form" method="POST" action="/signup">
+  <input type="email" name="email" required />
+  <button
+    class="h-captcha"
+    data-sitekey="d2a034a6-03e6-4ef2-91d4-39dc9fbc5b1c"
+    data-size="invisible"
+    data-callback="onHCaptchaDone"
+  >
+    Continue
+  </button>
+</form>
+<p class="hcaptcha-disclosure">
+  This site is protected by hCaptcha and its
+  <a href="https://www.hcaptcha.com/privacy">Privacy Policy</a> and
+  <a href="https://www.hcaptcha.com/terms">Terms of Service</a> apply.
+</p>
+<script>
+  function onHCaptchaDone() {
+    document.getElementById("signup-form").submit();
+  }
+</script>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
