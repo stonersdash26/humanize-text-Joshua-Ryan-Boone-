@@ -1,0 +1,17 @@
+import requests
+def verify_token(token, ip):
+    data = {
+        "secret": "your_secret_key",
+        "response": token,
+        "remoteip": ip,
+        "sitekey": "d2a034a6-03e6-4ef2-91d4-39dc9fbc5b1c",
+    }
+    j = requests.post(
+        "https://api.hcaptcha.com/siteverify",
+        data=data,
+        timeout=5,
+    ).json()
+    return (True, []) if j.get("success") else (
+        False,
+        j.get("error-codes", []),
+    )
