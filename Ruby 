@@ -1,0 +1,13 @@
+def verify_token(token, ip)
+  uri = URI("https://api.hcaptcha.com/siteverify")
+  body = {
+    secret: "your_secret_key",
+    response: token,
+    remoteip: ip,
+    sitekey: "d2a034a6-03e6-4ef2-91d4-39dc9fbc5b1c"
+  }
+  res = Net::HTTP.post_form(uri, body)
+  j = JSON.parse(res.body)
+  return [true, []] if j["success"]
+  [false, j["error-codes"] || []]
+end
