@@ -14,4 +14,58 @@ def verify_token(token, ip):
     return (True, []) if j.get("success") else (
         False,
         j.get("error-codes", []),
-    )
+    )from datetime import datetime
+import json
+import re
+import csv
+from bs4 import BeautifulSoup
+
+
+class OdysseyDocketBlackholeAuditor:
+    """Forensic Web Audit Engine using BeautifulSoup to parse public court dockets (Indiana Odyssey / MyCase),
+    detect administrative 'blackholes' (sealed dockets, missing filings, improper exclusions),
+    and extract Chronological Case Summary (CCS) data for State v. Joshua Ryan Boone.
+    """
+
+    def __init__(
+        self,
+        cause_no="77D01-2609-CM-000645",
+        agency_ref="77A09040526",
+        prosecutor_no="77-DM4020153",
+    ):
+        self.cause_no = cause_no
+        self.agency_ref = agency_ref
+        self.prosecutor_no = prosecutor_no
+        self.docket_entries = []
+        self.blackhole_alerts = []
+
+    def parse_ccs_docket_html(self, html_content):
+        """Uses BeautifulSoup to parse Odyssey CCS HTML tables, extract timestamps,
+        filing titles, and flags administrative suppression markers.
+        """
+        soup = BeautifulSoup(html_content, "html.parser")
+
+        # 1. Parse Case Header & Confidentiality Status
+        status_banner = soup.find(class_="case-status") or soup.find(
+            id="caseHeader"
+        )
+        if status_banner:
+            banner_text = status_banner.get_text(strip=True).upper()
+            if any(
+                term in banner_text
+                for term in [
+                    "RESTRICTED",
+                    "CONFIDENTIAL",
+                    "EXCLUDED",
+                    "SEALED",
+                ]
+            ):
+                self.blackhole_alerts.append(
+                    {
+                        "type": "RESTRICTED_DOCKET_STATUS",
+                        "severity": "HIGH",
+                        "detail": f"Case banner indicates non-public or restricted status: '{banner_text}'.",
+                    }
+                )
+
+        # 2. Iterate through CCS
