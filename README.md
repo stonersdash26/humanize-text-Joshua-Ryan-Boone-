@@ -1,3 +1,7 @@
+Reusable Workflow Chain:
+​openai/codex-security/.github/workflows/node-ci.yml@refs/pull/1602/merge (commit 74684d4e4daf70380e4acf5c1c2a605883336a3e)  
+​\rightarrow openai/codex-security/.github/workflows/native-artifacts.yml@refs/pull/1602/merge (commit 74684d4e4daf70380e4acf5c1c2a605883336a3e)  
+​\rightarrow \rightarrow openai/codex-security/.github/workflows/native-windows.yml@refs/pull/1602/merge (commit 74684d4e4daf70380e4acf5c1c2a605883336a3e)  
 <div align="center">
 
 # Lynote Humanize Text
